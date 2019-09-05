@@ -9,7 +9,7 @@ class TaskDialog extends StatefulWidget {
   @override
   _TaskDialogState createState() => _TaskDialogState();
 }
-
+//codigo de tela
 class _TaskDialogState extends State<TaskDialog> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -65,7 +65,7 @@ class _TaskDialogState extends State<TaskDialog> {
             _currentTask.title = _titleController.value.text;
             _currentTask.description = _descriptionController.text;
 
-            Navigator.of(context).pop(_currentTask);
+            Navigator.of(context).pop(_currentTask);//fecha a tela - e devolve a tela (task) coloca na lista e/ou pode salvar numa bade de dados
           },
         ),
       ],

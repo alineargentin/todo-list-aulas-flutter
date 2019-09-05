@@ -13,12 +13,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Task> _taskList = [];
   TaskHelper _helper = TaskHelper();
-  bool _loading = true;
+  bool _loading = true; 
 
   @override
-  void initState() {
+  void initState() { 
     super.initState();
-    _helper.getAll().then((list) {
+    _helper.getAll().then((list) { // quando ele retornar uma informação entao... 
       setState(() {
         _taskList = list;
         _loading = false;
@@ -31,48 +31,48 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('Lista de Tarefas')),
       floatingActionButton:
-          FloatingActionButton(child: Icon(Icons.add), onPressed: _addNewTask),
+          FloatingActionButton(child: Icon(Icons.add), onPressed: _addNewTask), //botao
       body: _buildTaskList(),
     );
   }
 
   Widget _buildTaskList() {
-    if (_taskList.isEmpty) {
+    if (_taskList.isEmpty) { // a lista esta vazia
       return Center(
-        child: _loading ? CircularProgressIndicator() : Text("Sem tarefas!"),
+        child: _loading ? CircularProgressIndicator() : Text("Sem tarefas!"), // esta carregando alguma coisa - fica um circo carregando
       );
     } else {
       return ListView.builder(
-        itemBuilder: _buildTaskItemSlidable,
-        itemCount: _taskList.length,
+        itemBuilder: _buildTaskItemSlidable, //constroi a lista 
+        itemCount: _taskList.length,//quantidade itens na lista
       );
     }
   }
-
+//construção de cada item "slidable"
   Widget _buildTaskItem(BuildContext context, int index) {
     final task = _taskList[index];
     return CheckboxListTile(
-      value: task.isDone,
+      value: task.isDone, //falso ou true
       title: Text(task.title),
       subtitle: Text(task.description),
       onChanged: (bool isChecked) {
         setState(() {
-          task.isDone = isChecked;
+          task.isDone = isChecked; // pertence a interface
         });
 
-        _helper.update(task);
+        _helper.update(task); // atualiza a base de dados com o novo valor
       },
     );
   }
-
+//
   Widget _buildTaskItemSlidable(BuildContext context, int index) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
+      actionExtentRatio: 0.25,//porcentagem de quanto cada botao ocupa na area 
       child: _buildTaskItem(context, index),
       actions: <Widget>[
-        IconSlideAction(
-          caption: 'Editar',
+        IconSlideAction( //esquerda para direita ou direita para esquerda
+          caption: 'Editar', // botao
           color: Colors.blue,
           icon: Icons.edit,
           onTap: () {
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         IconSlideAction(
-          caption: 'Excluir',
+          caption: 'Excluir',//botao excluir
           color: Colors.red,
           icon: Icons.delete,
           onTap: () {
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-
+//para adicionar - deixar a tela modal
   Future _addNewTask({Task editedTask, int index}) async {
     final task = await showDialog<Task>(
       context: context,
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
+//botao remover
   void _deleteTask({Task deletedTask, int index}) {
     setState(() {
       _taskList.removeAt(index);
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
         ),
         onPressed: () {
           setState(() {
-            _taskList.insert(index, deletedTask);
+            _taskList.insert(index, deletedTask); // reenciro na lista 
             _helper.update(deletedTask);
           });
         },

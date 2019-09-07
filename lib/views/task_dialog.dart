@@ -9,10 +9,13 @@ class TaskDialog extends StatefulWidget {
   @override
   _TaskDialogState createState() => _TaskDialogState();
 }
+
 //codigo de tela
 class _TaskDialogState extends State<TaskDialog> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   Task _currentTask = Task();
 
@@ -39,18 +42,33 @@ class _TaskDialogState extends State<TaskDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.task == null ? 'Nova tarefa' : 'Editar tarefas'),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TextField(
+      content: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextFormField(
               controller: _titleController,
               decoration: InputDecoration(labelText: 'Título'),
-              autofocus: true),
-          TextField(
+              autofocus: true,
+              validator: (String value) {
+                // Adicionar validações no cadastro de uma atividade (lembre-se que é preciso utilizar o widget TextFormField para isso)
+                return value.isEmpty ? 'O título é obrigatório' : null;
+              },
+            ),
+            TextFormField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Descrição')),
-        ],
+              decoration: InputDecoration(labelText: 'Descrição'),
+              // Campo descrição precisar aceitar múltiplas linhas
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              validator: (String value) {
+                return value.isEmpty ? 'A descrição é obrigatória' : null;
+              },
+            ),
+          ],
+        ),
       ),
       actions: <Widget>[
         FlatButton(
@@ -62,10 +80,13 @@ class _TaskDialogState extends State<TaskDialog> {
         FlatButton(
           child: Text('Salvar'),
           onPressed: () {
-            _currentTask.title = _titleController.value.text;
-            _currentTask.description = _descriptionController.text;
+            if (_formKey.currentState.validate()) {
+              _currentTask.title = _titleController.value.text;
+              _currentTask.description = _descriptionController.text;
 
-            Navigator.of(context).pop(_currentTask);//fecha a tela - e devolve a tela (task) coloca na lista e/ou pode salvar numa bade de dados
+              Navigator.of(context).pop(
+                  _currentTask); //fecha a tela - e devolve a tela (task) coloca na lista e/ou pode salvar numa bade de dados
+            }
           },
         ),
       ],

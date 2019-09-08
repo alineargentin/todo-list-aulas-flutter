@@ -34,7 +34,8 @@ class TaskHelper {
           "id INTEGER PRIMARY KEY, "
           "title TEXT, "
           "description TEXT, "
-          "isDone INTEGER)");
+          "isDone INTEGER, "
+          "priority INTEGER)");
     });
   }
 // metodo que conta
@@ -60,7 +61,7 @@ class TaskHelper {
   Future<Task> getById(int id) async {
     Database database = await db;
     List<Map> maps = await database.query('task',
-        columns: ['id', 'title', 'description', 'isDone'],
+        columns: ['id', 'title', 'description', 'isDone', 'priority'],
         where: 'id = ?',
         whereArgs: [id]);
 
@@ -89,7 +90,7 @@ class TaskHelper {
 //
   Future<List<Task>> getAll() async {
     Database database = await db;
-    List listMap = await database.rawQuery("SELECT * FROM task");
+    List listMap = await database.rawQuery("SELECT * FROM task ORDER BY priority ASC, isDone DESC");
     List<Task> stuffList = listMap.map((x) => Task.fromMap(x)).toList();
     return stuffList;
   }

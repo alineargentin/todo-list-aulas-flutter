@@ -22,6 +22,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    loadInitialTaskList();
+  }
+
+  void loadInitialTaskList() {
     _helper.getAll().then((list) {
       // quando ele retornar uma informação entao...
       setState(() {
@@ -49,11 +53,11 @@ class _HomePageState extends State<HomePage> {
           CircularPercentIndicator(
             radius: 48.0,
             lineWidth: 5.0,
-            percent: _doneTasksCount /
-                _taskList
-                    .length, // qtde de tasks feitas dividido pelo tamanho da lista
+            // qtde de tasks feitas dividido pelo tamanho da lista
+            percent:
+                _taskList.isEmpty ? 0.0 : _doneTasksCount / _taskList.length,
             center: new Text(
-                "${((_doneTasksCount / _taskList.length) * 100).toStringAsPrecision(3)}%",
+                "${((_taskList.isEmpty ? 0.0 : _doneTasksCount / _taskList.length) * 100).toStringAsPrecision(3)}%",
                 style: TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold)),
             progressColor: Colors.white,
@@ -88,22 +92,33 @@ class _HomePageState extends State<HomePage> {
 //construção de cada item "slidable"
   Widget _buildTaskItem(BuildContext context, int index) {
     final task = _taskList[index];
-    return CheckboxListTile(
-      value: task.isDone, //falso ou true
-      title: Text(task.title),
-      subtitle: Text(task.description),
-      onChanged: (bool isChecked) {
-        setState(() {
-          task.isDone = isChecked; // pertence a interface
-          if (isChecked) {
-            _doneTasksCount++;
-          } else {
-            _doneTasksCount--;
-          }
-        });
+    return Column(
+      children: <Widget>[
+        CheckboxListTile(
+          value: task.isDone, //falso ou true
+          title: Text(task.title),
+          subtitle: Text(task.description),
+          onChanged: (bool isChecked) {
+            setState(() {
+              task.isDone = isChecked; // pertence a interface
+              if (isChecked) {
+                _doneTasksCount++;
+              } else {
+                _doneTasksCount--;
+              }
+            });
 
-        _helper.update(task); // atualiza a base de dados com o novo valor
-      },
+            _helper.update(task); // atualiza a base de dados com o novo valor
+          },
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "  Prioridade: " + task.priority.toString(),
+            textAlign: TextAlign.left,
+          ),
+        ),
+      ],
     );
   }
 
@@ -154,6 +169,7 @@ class _HomePageState extends State<HomePage> {
           _taskList[index] = task;
           _helper.update(task);
         }
+        loadInitialTaskList();
       });
     }
   }

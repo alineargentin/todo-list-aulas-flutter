@@ -16,6 +16,7 @@ class _TaskDialogState extends State<TaskDialog> {
   final _descriptionController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  int _priorityDropdownValue = 1;
 
   Task _currentTask = Task();
 
@@ -29,6 +30,7 @@ class _TaskDialogState extends State<TaskDialog> {
 
     _titleController.text = _currentTask.title;
     _descriptionController.text = _currentTask.description;
+    _priorityDropdownValue = _currentTask.priority;
   }
 
   @override
@@ -67,6 +69,28 @@ class _TaskDialogState extends State<TaskDialog> {
                 return value.isEmpty ? 'A descrição é obrigatória' : null;
               },
             ),
+            // Criar um campo para nível de prioridades que aceita valores entre 1
+            // (baixa prioridade) e 5 (alta prioridade).
+            // Representar isso no card da forma como achar mais interessante.
+            SizedBox(
+              // Sized Box para largura ficar igual dos campos de texto
+              width: double.infinity,
+              child: DropdownButton<int>(
+                value: _priorityDropdownValue,
+                onChanged: (int newValue) {
+                  setState(() {
+                    _priorityDropdownValue = newValue;
+                  });
+                },
+                items: <int>[1, 2, 3, 4, 5]
+                    .map<DropdownMenuItem<int>>((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text("Prioridade: " + value.toString()),
+                  );
+                }).toList(),
+              ),
+            ),
           ],
         ),
       ),
@@ -83,6 +107,7 @@ class _TaskDialogState extends State<TaskDialog> {
             if (_formKey.currentState.validate()) {
               _currentTask.title = _titleController.value.text;
               _currentTask.description = _descriptionController.text;
+              _currentTask.priority = _priorityDropdownValue;
 
               Navigator.of(context).pop(
                   _currentTask); //fecha a tela - e devolve a tela (task) coloca na lista e/ou pode salvar numa bade de dados

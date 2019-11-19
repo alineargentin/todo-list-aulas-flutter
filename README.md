@@ -1,5 +1,6 @@
 # Lista de Tarefas
 
+// ALINE ARGENTIN - DANTRICIA MARIA - FELIPE AMBROZINI- LUCAS PIRES
 Aplicativo para gerenciar as tarefas do dia-a-dia criado para disciplina de Programação Mobile.
 
 Tutorial de criação deste app: http://bit.ly/2jXXU7Q
